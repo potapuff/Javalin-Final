@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title != null ? title : 'My CV'}">My CV</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="pixel-theme">
+    <div class="container py-5">
+        <!-- Error messages -->
+        <div th:if="${error}" class="error-container text-center">
+            <img th:if="${errorImage}" 
+                 th:src="${errorImage}" 
+                 alt="Error Image" 
+                 class="error-dino mb-4">
+            <div class="alert alert-danger pixel-border" th:text="${error}"></div>
+        </div>
+
+        <!-- Main content -->
+        <div th:unless="${error}" class="cv-container">
+            <div class="pixel-avatar-container">
+                <img src="/images/avatar.png" alt="Profile Avatar" class="pixel-avatar">
+            </div>
+
+            <div th:each="content : ${contents}" class="content-section pixel-border">
+                <div th:utext="${content.renderedContent}" 
+                     class="markdown-content"></div>
+                <a th:if="${showEdit}"
+                   th:href="@{/admin/edit/{id}(id=${content.id})}" 
+                   class="btn btn-pixel">Edit</a>
+            </div>
+
+            <!-- Edit form -->
+            <div th:if="${editing}" class="edit-form pixel-border">
+                <form th:action="@{/admin/update/{id}(id=${content.id})}" method="POST">
+                    <textarea name="content" 
+                              th:text="${content != null ? content.content : ''}" 
+                              class="form-control pixel-input"></textarea>
+                    <button type="submit" class="btn btn-pixel mt-3">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
